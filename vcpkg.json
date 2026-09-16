@@ -1,0 +1,7 @@
+{
+  "name": "text-analyzer",
+  "version": "0.1.0",
+  "dependencies": [
+    "drogon"
+  ]
+}
