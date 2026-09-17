@@ -1,4 +1,6 @@
 # text-analyzer
+[![CI](https://github.com/Seratt12/text-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/Seratt12/text-analyzer/actions/workflows/ci.yml)
+
 
 HTTP-сервис на C++ (Drogon), который принимает текст и возвращает статистику по нему.
 
