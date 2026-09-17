@@ -1,20 +1,19 @@
 #include "generalHandlers.h"
 
-void general_handlers::GeneralHandler(
+void general_handlers::generalHandler(
     const drogon::HttpRequestPtr& request,
     Callback&& callback
 )
 {
     Json::Value json;
-    json["return"] = "Ууу, ответ тут какой-то";
-    json["status"] = "ok";
+    json["return"] = "HTTP-сервис на C++ (Drogon), который принимает текст и возвращает статистику по нему.";
 
     auto response = drogon::HttpResponse::newHttpJsonResponse(json);
 
     callback(response);
 }
 
-void general_handlers::StatusHandler(
+void general_handlers::statusHandler(
     const drogon::HttpRequestPtr& request,
     Callback&& callback
 )

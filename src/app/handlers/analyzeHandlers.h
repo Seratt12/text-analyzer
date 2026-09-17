@@ -2,16 +2,11 @@
 
 #include <drogon/drogon.h>
 
-namespace general_handlers
+namespace analyze_handlers
 {
 using Callback = std::function<void(const drogon::HttpResponsePtr&)>;
 
-void generalHandler(
-    const drogon::HttpRequestPtr& request,
-    Callback&& callback
-);
-
-void statusHandler(
+void handler(
     const drogon::HttpRequestPtr& request,
     Callback&& callback
 );
