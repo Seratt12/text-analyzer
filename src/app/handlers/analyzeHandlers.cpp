@@ -22,12 +22,23 @@ void analyze_handlers::handler(
     }
 
     Json::Value result;
+
+    auto info = text_analyzer::getFullInfo(text);
+
     result["source_text"] = text;
-
-    text_analyzer::TextStatistics textStat{ };
-    result["chars"] = textStat.getSymbolsCount(text);
-    result["words"] = textStat.getWordsCount(text);
-    result["unique_words"] = textStat.getUniqueWordsCount(text);
-
+    result["chars"] = info.chars;
+    result["words"] = info.words;
+    result["unique_words"] = info.uniqueWords;
+    result["sentences"] = info.sentences;
+    result["average_word_length"] = info.average_word_length;
+    Json::Value wordsJson{ Json::arrayValue };
+    for (const auto& word : info.topWords)
+    {
+        Json::Value wordJson;
+        wordJson["word"] = word.first;
+        wordJson["count"] = static_cast<Json::UInt64>(word.second);
+        wordsJson.append(wordJson);
+    }
+    result["top_words"] = wordsJson;
     callback(responses::makeJsonOk(result));
 }

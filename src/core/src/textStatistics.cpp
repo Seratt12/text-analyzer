@@ -1,7 +1,9 @@
 #include "core/textStatistics.h"
 #include <algorithm>
+#include <numeric>
 #include <cctype>
-#include <unordered_set>
+#include <unordered_map>
+#include <cmath>
 #include <boost/locale.hpp>
 
 namespace
@@ -31,7 +33,9 @@ bool isDelimiter(const char ch)
 }
 }
 
-size_t text_analyzer::TextStatistics::getSymbolsCount(const std::string& source) noexcept
+namespace text_analyzer
+{
+size_t getSymbolsCount(const std::string& source) noexcept
 {
     size_t count = 0;
     for (unsigned char ch : source)
@@ -44,19 +48,82 @@ size_t text_analyzer::TextStatistics::getSymbolsCount(const std::string& source)
     return count;
 }
 
-size_t text_analyzer::TextStatistics::getWordsCount(const std::string& source)
+size_t getWordsCount(const std::vector<std::string>& source)
 {
-    return splitWords(source).size();
+    return source.size();
 }
 
-size_t text_analyzer::TextStatistics::getUniqueWordsCount(const std::string& source)
+size_t getUniqueWordsCount(const std::vector<std::string>& source)
 {
-    const auto allWords = splitWords(source);
-    std::unordered_set<std::string> uniqueWords{ allWords.begin(), allWords.end() };
-    return uniqueWords.size();
+    return getUniqueWords(source).size();
 }
 
-std::vector<std::string> text_analyzer::TextStatistics::splitWords(const std::string& source)
+size_t getSentencesCount(const std::string& source) noexcept
+{
+    size_t count = 0;
+    for (char ch : source)
+    {
+        if (ch == '.' || ch == '?' || ch == '!')
+            ++count;
+    }
+    return count;
+}
+
+double getAverageWordLength(const std::vector<std::string>& words)
+{
+    const size_t wordsCount = words.size();
+    if (wordsCount == 0)
+        return 0.0;
+
+    const size_t totalChars = std::accumulate(words.begin(), words.end(), size_t{ 0 }, [ ](size_t sum, const std::string& word)
+        {
+            return sum + getSymbolsCount(word);
+        });
+    return static_cast<double>(totalChars) / wordsCount;
+}
+
+std::vector<std::pair<std::string, size_t>> getTopWords(const std::vector<std::string>& words, size_t count /* = 5 */)
+{
+    std::unordered_map<std::string, size_t> freq;
+
+    for (const auto& word : words)
+        ++freq[word];
+
+    std::vector<std::pair<std::string, size_t>> sorted(freq.begin(), freq.end());
+
+    std::sort(sorted.begin(), sorted.end(),
+        [ ](const auto& a, const auto& b)
+        {
+            if (a.second != b.second)
+                return a.second > b.second;
+            return a.first < b.first;
+        });
+
+    constexpr size_t topN = 5;
+    if (sorted.size() > topN)
+        sorted.resize(topN);
+
+    return sorted;
+}
+
+AnalyzeTextResult getFullInfo(const std::string& source)
+{
+    AnalyzeTextResult result{ };
+    result.chars = getSymbolsCount(source);
+    result.sentences = getSentencesCount(source);
+
+    const auto words = splitWords(source);
+    result.words = getWordsCount(words);
+
+    result.uniqueWords = getUniqueWordsCount(words);
+
+    result.average_word_length = getAverageWordLength(words);
+    result.topWords = getTopWords(words);
+
+    return result;
+}
+
+std::vector<std::string> splitWords(const std::string& source)
 {
     const std::string lowerString = toLowerCase(source);
 
@@ -80,4 +147,10 @@ std::vector<std::string> text_analyzer::TextStatistics::splitWords(const std::st
         result.push_back(word);
 
     return result;
+}
+
+std::unordered_set<std::string> getUniqueWords(const std::vector<std::string>& words)
+{
+    return { words.begin(), words.end() };
+}
 }
