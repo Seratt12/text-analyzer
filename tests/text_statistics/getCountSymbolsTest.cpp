@@ -39,8 +39,5 @@ TEST(TextStatisticsSymbols, OnlySpaces)
 
 TEST(TextStatisticsSymbols, CyrillicCountsBytes)
 {
-    // ВНИМАНИЕ: getCountSymbols считает БАЙТЫ, не символы.
-    // "Привет" в UTF-8 — 12 байт (6 букв × 2 байта).
-    // Этот тест документирует текущее поведение.
-    EXPECT_EQ(TextStatistics::getCountSymbols("Привет"), 12u);
+    EXPECT_EQ(TextStatistics::getCountSymbols("Привет"), 6u);
 }

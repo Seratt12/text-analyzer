@@ -30,7 +30,15 @@ bool isDelimiter(const char ch)
 
 size_t text_analyzer::TextStatistics::getCountSymbols(const std::string& source) noexcept
 {
-    return source.length();
+    size_t count = 0;
+    for (unsigned char ch : source)
+    {
+        // Байты 0x80..0xBF — это "продолжения" символа,
+        // они не начинают новый символ. Остальные — начинают.
+        if ((ch & 0xC0) != 0x80)
+            ++count;
+    }
+    return count;
 }
 
 size_t text_analyzer::TextStatistics::getCountWords(const std::string& source)
