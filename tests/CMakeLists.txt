@@ -1,6 +1,7 @@
 add_executable(core_tests
-    text_statistics/getCountSymbolsTest.cpp
-    text_statistics/getCountWordsTest.cpp
+    text_statistics/getSymbolsCountTest.cpp
+    text_statistics/getWordsCountTest.cpp
+    text_statistics/getUniqueWordsCount.cpp
 )
 
 target_link_libraries(core_tests

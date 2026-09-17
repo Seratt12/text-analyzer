@@ -1,17 +1,20 @@
 #include "core/textStatistics.h"
 #include <algorithm>
 #include <cctype>
+#include <unordered_set>
+#include <boost/locale.hpp>
 
 namespace
 {
+std::locale getLocale()
+{
+    static const std::locale loc = boost::locale::generator{ }("");
+    return loc;
+}
+
 std::string toLowerCase(const std::string& sourceString)
 {
-    std::string stringToLowerCase = sourceString;
-    std::transform(stringToLowerCase.begin(), stringToLowerCase.end(), stringToLowerCase.begin(), [ ](char c)
-        {
-            return static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-        });
-    return stringToLowerCase;
+    return boost::locale::to_lower(sourceString, getLocale());
 }
 
 bool isDelimiter(const char ch)
@@ -28,7 +31,7 @@ bool isDelimiter(const char ch)
 }
 }
 
-size_t text_analyzer::TextStatistics::getCountSymbols(const std::string& source) noexcept
+size_t text_analyzer::TextStatistics::getSymbolsCount(const std::string& source) noexcept
 {
     size_t count = 0;
     for (unsigned char ch : source)
@@ -41,9 +44,16 @@ size_t text_analyzer::TextStatistics::getCountSymbols(const std::string& source)
     return count;
 }
 
-size_t text_analyzer::TextStatistics::getCountWords(const std::string& source)
+size_t text_analyzer::TextStatistics::getWordsCount(const std::string& source)
 {
     return splitWords(source).size();
+}
+
+size_t text_analyzer::TextStatistics::getUniqueWordsCount(const std::string& source)
+{
+    const auto allWords = splitWords(source);
+    std::unordered_set<std::string> uniqueWords{ allWords.begin(), allWords.end() };
+    return uniqueWords.size();
 }
 
 std::vector<std::string> text_analyzer::TextStatistics::splitWords(const std::string& source)

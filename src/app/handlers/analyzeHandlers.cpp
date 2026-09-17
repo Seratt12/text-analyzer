@@ -25,8 +25,9 @@ void analyze_handlers::handler(
     result["source_text"] = text;
 
     text_analyzer::TextStatistics textStat{ };
-    result["chars"] = textStat.getCountSymbols(text);
-    result["words"] = textStat.getCountWords(text);
+    result["chars"] = textStat.getSymbolsCount(text);
+    result["words"] = textStat.getWordsCount(text);
+    result["unique_words"] = textStat.getUniqueWordsCount(text);
 
     callback(responses::makeJsonOk(result));
 }

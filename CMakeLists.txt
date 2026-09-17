@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Drogon CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS locale)
 
 add_subdirectory(src/core)
 add_subdirectory(src/app)
