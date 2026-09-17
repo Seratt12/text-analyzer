@@ -1,5 +1,5 @@
 add_library(core STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/core.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/textStatistics.cpp
 )
 
 target_include_directories(core PUBLIC

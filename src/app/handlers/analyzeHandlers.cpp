@@ -1,5 +1,6 @@
 #include "analyzeHandlers.h"
 #include "responses/responses.h"
+#include "core/textStatistics.h"
 
 void analyze_handlers::handler(
     const drogon::HttpRequestPtr& request,
@@ -21,6 +22,11 @@ void analyze_handlers::handler(
     }
 
     Json::Value result;
-    result["your_text"] = text;
+    result["source_text"] = text;
+
+    text_analyzer::TextStatistics textStat{ };
+    result["chars"] = textStat.getCountSymbols(text);
+    result["words"] = textStat.getCountWords(text);
+
     callback(responses::makeJsonOk(result));
 }

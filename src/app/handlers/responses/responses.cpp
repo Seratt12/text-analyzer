@@ -8,7 +8,7 @@ drogon::HttpResponsePtr responses::makeJsonOk(const Json::Value& body)
 
 drogon::HttpResponsePtr responses::makeJsonError(
     const std::string& errorText,
-    drogon::HttpStatusCode code /* = drogon::k400BadRequest */
+    drogon::HttpStatusCode code /* = k400BadRequest */
 )
 {
     Json::Value jsonReturn;
