@@ -4,12 +4,16 @@
 
 namespace
 {
-const inline std::string fieldText = "text";
-const inline std::string fieldTexts = "texts";
+const std::string fieldText = "text";
+const std::string fieldTexts = "texts";
 
-Json::Value GetTextAnalyzeInfo(std::string text)
+constexpr size_t MAX_BATCH_SIZE = 300;
+
+Json::Value GetTextAnalyzeInfo(const std::string& text)
 {
-    LOG_INFO << "GetTextAnalyzeInfo with text: " << text.c_str();
+#ifndef NDEBUG
+    LOG_DEBUG << "GetTextAnalyzeInfo with text: " << text;
+#endif
     auto info = text_analyzer::getFullInfo(text);
 
     Json::Value result;
@@ -40,7 +44,7 @@ void analyze_handlers::handler(
     const auto jsonBody = request->getJsonObject();
     if (!jsonBody || !(jsonBody->isMember(fieldText)))
     {
-        LOG_ERROR << "analyze_handlers::handler no find field 'text'";
+        LOG_ERROR << "no find field 'text'";
         callback(responses::makeJsonError("field 'text' is required"));
         return;
     }
@@ -48,7 +52,7 @@ void analyze_handlers::handler(
     const std::string text = (*jsonBody)[fieldText].asString();
     if (text.empty())
     {
-        LOG_ERROR << "analyze_handlers::handler field 'text' is empty";
+        LOG_ERROR << "field 'text' is empty";
         callback(responses::makeJsonError("text is empty"));
         return;
     }
@@ -65,26 +69,38 @@ void analyze_handlers::handlerBatch(
     auto jsonBody = request->getJsonObject();
     if (!jsonBody || !(jsonBody->isMember(fieldTexts)))
     {
-        LOG_ERROR << "analyze_handlers::handlerBatch no find field 'texts'";
+        LOG_ERROR << "no find field 'texts'";
         callback(responses::makeJsonError("field 'texts' is required"));
         return;
     }
 
-    Json::Value texts = (*jsonBody)[fieldTexts];
-    if (texts.empty() || !texts.isArray() || texts.size() == 0)
+    const Json::Value& texts = (*jsonBody)[fieldTexts];
+    if (!texts.isArray() || texts.empty())
     {
-        LOG_ERROR << "analyze_handlers::handlerBatch field 'texts' is empty or not array";
+        LOG_ERROR << "field 'texts' is empty or not array";
         callback(responses::makeJsonError("texts is empty or not array"));
         return;
     }
 
-    Json::Value result;
+    if (texts.size() > MAX_BATCH_SIZE)
+    {
+        callback(responses::makeJsonError("too many texts (max " + std::to_string(MAX_BATCH_SIZE) + ")"));
+        return;
+    }
 
+    Json::Value resultArray(Json::arrayValue);
     for (const auto& textJson : texts)
     {
+        if (!textJson.isString())
+        {
+            Json::Value jsonReturn;
+            jsonReturn["error"] = "element is not a string";
+            resultArray.append(jsonReturn);
+            continue;
+        }
         const std::string text = textJson.asString();
         const Json::Value resultElement = GetTextAnalyzeInfo(text);
-        result.append(resultElement);
+        resultArray.append(resultElement);
     }
-    callback(responses::makeJsonOk(result));
+    callback(responses::makeJsonOk(resultArray));
 }
