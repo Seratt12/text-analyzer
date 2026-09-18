@@ -30,7 +30,9 @@ vcpkg install drogon gtest boost-locale
 
 ## API
 
-- `GET /status` - Проверка работоспособности сервиса.
+### `GET /status`
+
+Проверка работоспособности сервиса.
 
 Запрос:
 
@@ -46,7 +48,9 @@ curl http://localhost:3000/status
 }
 ```
 
-- `POST /analyze` - Принимает текст и возвращает статистику.
+### `POST /analyze`
+
+Принимает текст и возвращает статистику.
 
 Запрос:
 
@@ -73,6 +77,77 @@ curl -X POST http://localhost:3000/analyze \
 }
 ```
 
+### `POST /analyze/batch`
+
+Принимает массив текстов и возвращает массив результатов анализа в **том же порядке**.
+
+**Запрос:**
+
+```bash
+curl -X POST http://localhost:3000/analyze/batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "texts": [
+      "Hello world. Hello again!",
+      "Привет, мир!",
+      "The quick brown fox jumps over the lazy dog."
+    ]
+  }'
+```
+
+**Тело запроса:**
+
+| Поле | Тип | Обязательное | Описание |
+|---|---|---|---|
+| `texts` | array of string | да | Массив текстов для анализа |
+
+**Ответ:**
+
+```json
+[
+  {
+    "source_text": "Hello world. Hello again!",
+    "chars": 25,
+    "words": 4,
+    "sentences": 2,
+    "unique_words": 3,
+    "average_word_length": 5.0,
+    "top_words": [
+      { "word": "hello", "count": 2 },
+      { "word": "again", "count": 1 },
+      { "word": "world", "count": 1 }
+    ]
+  },
+  {
+    "source_text": "Привет, мир!",
+    "chars": 12,
+    "words": 2,
+    "sentences": 1,
+    "unique_words": 2,
+    "average_word_length": 6.0,
+    "top_words": [
+      { "word": "мир", "count": 1 },
+      { "word": "привет", "count": 1 }
+    ]
+  },
+  {
+    "source_text": "The quick brown fox jumps over the lazy dog.",
+    "chars": 44,
+    "words": 9,
+    "sentences": 1,
+    "unique_words": 8,
+    "average_word_length": 3.44,
+    "top_words": [
+      { "word": "the", "count": 2 },
+      { "word": "brown", "count": 1 },
+      { "word": "dog", "count": 1 },
+      { "word": "fox", "count": 1 },
+      { "word": "jumps", "count": 1 }
+    ]
+  }
+]
+```
+
 Поля ответа:
 
 | Поле | Тип | Описание |
@@ -83,6 +158,11 @@ curl -X POST http://localhost:3000/analyze \
 | `unique_words` | integer | Количество уникальных слов (без учёта регистра) |
 | `average_word_length` | number | Средняя длина слова в символах |
 | `top_words` | array | Топ-5 самых частых слов с количеством вхождений |
+
+**Ограничения:**
+
+- **Пустые тексты внутри массива** не пропускаются — для них возвращается результат с `words: 0`, `unique_words: 0`, `top_words: []`.
+- **Максимальное количество текстов** за запрос не ограничено на уровне приложения.
 
 ## Технологии
 

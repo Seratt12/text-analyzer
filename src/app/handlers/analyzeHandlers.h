@@ -10,4 +10,9 @@ void handler(
     const drogon::HttpRequestPtr& request,
     Callback&& callback
 );
+
+void handlerBatch(
+    const drogon::HttpRequestPtr& request,
+    Callback&& callback
+);
 }
