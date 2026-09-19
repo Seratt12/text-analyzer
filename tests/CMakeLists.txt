@@ -8,12 +8,18 @@ add_executable(core_tests
     text_statistics/splitWordsTest.cpp
     analyze_handlers/validateBatchRequestTest.cpp
     analyze_handlers/validateRequestTest.cpp
+    responses/makeJsonOkTest.cpp
+    responses/makeJsonErrorTest.cpp
+    general_handlers/generalHandlersTest.cpp
+    analyze_handlers/handlersTest.cpp
 )
 
 target_link_libraries(core_tests
     PRIVATE
         core
         app_lib
+        JsonCpp::JsonCpp
+        Drogon::Drogon
         GTest::gtest_main
 )
 

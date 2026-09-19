@@ -1,6 +1,6 @@
 #include "routes.h"
-#include "handlers/generalHandlers.h"
-#include "handlers/analyzeHandlers.h"
+#include "app_lib/handlers/generalHandlers.h"
+#include "app_lib/handlers/analyzeHandlers.h"
 
 void routes::registerRoutes(drogon::HttpAppFramework& app)
 {

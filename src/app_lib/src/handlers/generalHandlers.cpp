@@ -1,4 +1,4 @@
-#include "generalHandlers.h"
+#include "app_lib/handlers/generalHandlers.h"
 
 void general_handlers::generalHandler(
     const drogon::HttpRequestPtr& request,

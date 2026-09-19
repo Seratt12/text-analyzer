@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "app_lib/analyzeHandlers.h"
+#include "app_lib/handlers/analyzeHandlers.h"
 
 using analyze_handlers::validateRequest;
 
