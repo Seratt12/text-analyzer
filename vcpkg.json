@@ -5,6 +5,7 @@
   "dependencies": [
     "drogon",
     "gtest",
-    "boost-locale"
+    "boost-locale",
+    "jsoncpp"
   ]
 }

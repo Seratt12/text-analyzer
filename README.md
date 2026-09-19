@@ -173,4 +173,4 @@ curl -X POST http://localhost:3000/analyze/batch \
 - Google Test — юнит-тесты
 - CMake — система сборки
 - vcpkg — менеджер зависимостей
-- jsoncpp — работа с JSON (транзитивно через Drogon)
+- jsoncpp — работа с JSON

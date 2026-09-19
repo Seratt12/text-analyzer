@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-and-test:
+  windows-build-test:
     runs-on: windows-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: ctest --test-dir build -C Release --output-on-failure
 
-  coverage-linux:
+  ubuntu-build-test-coverage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
