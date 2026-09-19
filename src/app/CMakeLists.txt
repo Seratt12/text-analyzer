@@ -12,5 +12,6 @@ configure_file(
 target_link_libraries(axis
     PRIVATE
         core
+        app_lib
         Drogon::Drogon
 )
