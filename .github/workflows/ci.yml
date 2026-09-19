@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: ctest --test-dir build -C Release --output-on-failure
 
- coverage-linux:
+  coverage-linux:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
